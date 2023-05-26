@@ -17,7 +17,6 @@ import vo.Movie_UserVO;
 import vo.MyPageList_ViewVO;
 import vo.SimilarVO;
 
-
 public class MovieMate_MovieDAO {
 
 	SqlSession sqlSession;
@@ -63,14 +62,9 @@ public class MovieMate_MovieDAO {
 	public List<MovieMate_MovieVO> director_list(String keyword) {
 		MovieMate_CastVO vo = new MovieMate_CastVO();
 		vo.setName(keyword);
-		int cast_idx = sqlSession.selectOne("mmcast.selectOne", vo);
-		Movie_CastVO vo_3 = new Movie_CastVO();
-		vo_3.setCast_idx(cast_idx);
-		List<Movie_CastVO> list = sqlSession.selectList("mcast.selectCastList", vo_3);
-		List<MovieMate_MovieVO> movie_list = new ArrayList<MovieMate_MovieVO>();
-		for (Movie_CastVO movie : list) {
-			movie_list.add(sqlSession.selectOne("mmmovie.selectMovieIdx", movie));
-		}
+		
+		List<MovieMate_MovieVO> movie_list = sqlSession.selectList("mmmovie.week_cast", vo);
+
 		return movie_list;
 	}
 
@@ -92,22 +86,11 @@ public class MovieMate_MovieDAO {
 
 	// Movie Mate가 추천하는 이 주의 배우
 	public List<MovieMate_MovieVO> recommend_list(String keyword) {
-		List<MovieMate_MovieVO> movie_list = new ArrayList<MovieMate_MovieVO>();
 		MovieMate_CastVO vo = new MovieMate_CastVO();
 		vo.setName(keyword);
-		int cast_idx = 0;
-		try {
-			cast_idx = sqlSession.selectOne("mmcast.selectOne", vo);
-		} catch (Exception e) {
-			// TODO: handle exception
-			return movie_list;
-		}
-		Movie_CastVO vo_2 = new Movie_CastVO();
-		vo_2.setCast_idx(cast_idx);
-		List<Movie_CastVO> list = sqlSession.selectList("mcast.selectCastList", vo_2);
-		for (Movie_CastVO movie : list) {
-			movie_list.add(sqlSession.selectOne("mmmovie.selectMovieIdx", movie));
-		}
+
+		List<MovieMate_MovieVO> movie_list = sqlSession.selectList("mmmovie.week_cast", vo);
+
 		return movie_list;
 	}
 
@@ -170,13 +153,12 @@ public class MovieMate_MovieDAO {
 		return vo;
 	}
 
-
 	// 내가 누른 인물의 모든 출연 영화 리스트
 	public List<MovieMate_MovieVO> castMovieList(MovieMate_CastVO vo) {
 
 		List<MovieMate_MovieVO> totalList = new ArrayList<MovieMate_MovieVO>();
 		List<Movie_CastVO> movieIdxList = sqlSession.selectList("mcast.selectCastList", vo);
-		for(Movie_CastVO mc_vo : movieIdxList) {
+		for (Movie_CastVO mc_vo : movieIdxList) {
 			totalList.add(sqlSession.selectOne("mmmovie.selectMovieIdx", mc_vo));
 		}
 		return totalList;
@@ -186,7 +168,7 @@ public class MovieMate_MovieDAO {
 	public List<MyPageList_ViewVO> myList_starScore(int user_idx) {
 
 		List<MyPageList_ViewVO> starList = sqlSession.selectList("muser.starList", user_idx);
-	
+
 		return starList;
 	}
 
@@ -194,41 +176,40 @@ public class MovieMate_MovieDAO {
 	public List<MyPageList_ViewVO> myList_want(int user_idx) {
 
 		List<MyPageList_ViewVO> wantList = sqlSession.selectList("muser.wantList", user_idx);
-	
+
 		return wantList;
 	}
 
 	// 내가 좋아요 누른 영화 중 베스트 영화
-	public List<BestMovie_ViewVO> bestMovieList(MovieMate_UserVO vo){
-		
+	public List<BestMovie_ViewVO> bestMovieList(MovieMate_UserVO vo) {
+
 		List<BestMovie_ViewVO> res = sqlSession.selectList("mmmovie.bestMovieList", vo);
-		
-		return res;
-	}
-	
-	// 내가 좋아요 누른 영화중 베스트 장르
-	public List<BestGenre_ViewVO> bestGenreList(MovieMate_UserVO vo){
-		
-		List<BestGenre_ViewVO> res = sqlSession.selectList("mmmovie.bestGenreList", vo);
-		
-		return res;
-	}
-	
-	// 런타임
-	public int runtime(MovieMate_UserVO vo) {
-		
-		int res = sqlSession.selectOne("mmmovie.runtime", vo);
-		
-		return res;
-	}
-	
-	// 영화 평균 계산
-	public int  update_starScore(Movie_UserVO vo) {
-		
-		int res = sqlSession.update("mmmovie.update_starScore", vo);
-		
+
 		return res;
 	}
 
+	// 내가 좋아요 누른 영화중 베스트 장르
+	public List<BestGenre_ViewVO> bestGenreList(MovieMate_UserVO vo) {
+
+		List<BestGenre_ViewVO> res = sqlSession.selectList("mmmovie.bestGenreList", vo);
+
+		return res;
+	}
+
+	// 런타임
+	public int runtime(MovieMate_UserVO vo) {
+
+		int res = sqlSession.selectOne("mmmovie.runtime", vo);
+
+		return res;
+	}
+
+	// 영화 평균 계산
+	public int update_starScore(Movie_UserVO vo) {
+
+		int res = sqlSession.update("mmmovie.update_starScore", vo);
+
+		return res;
+	}
 
 }

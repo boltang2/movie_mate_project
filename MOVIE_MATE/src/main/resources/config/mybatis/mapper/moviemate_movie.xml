@@ -40,8 +40,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="vo.MovieMate_MovieVO">
 		SELECT * FROM (SELECT RANK() OVER(ORDER BY star_score
 		DESC, release_date desc) no, m.*
-		FROM (SELECT * FROM moviemate_movie WHERE profile_img !=
-		'no_data.jpg' AND release_date &lt;= '20220101') m )
+		FROM (SELECT * FROM moviemate_movie
+		WHERE profile_img !=
+		'no_data.jpg' AND release_date &lt;= '20220101') m
+		)
 		WHERE (no BETWEEN 1 AND 15)
 	</select>
 
@@ -79,9 +81,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="vo.MovieMate_MovieVO">
 		SELECT * FROM (SELECT RANK() OVER(ORDER BY star_score
 		DESC, release_date desc) no, m.*
-		FROM (SELECT * FROM moviemate_movie WHERE profile_img !=
+		FROM (SELECT * FROM moviemate_movie
+		WHERE profile_img !=
 		'no_data.jpg' AND genre LIKE '%' ||
-		#{genre} || '%') m )
+		#{genre} ||
+		'%') m )
 		WHERE (no BETWEEN 1 AND 15)
 	</select>
 
@@ -143,6 +147,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{movie_idx}
 	</update>
 
-
+	<select id="week_cast" resultType="vo.MovieMate_MovieVO"
+		parameterType="vo.MovieMate_CastVO">
+		select mmm.* from moviemate_movie mmm, movie_cast mc, moviemate_cast mmc
+		where mmm.movie_idx = mc.movie_idx and mc.cast_idx = mmc.cast_idx and
+		mmc.name = #{name}
+	</select>
 </mapper>
 
