@@ -216,6 +216,9 @@
 현재 moviemate_cast, movie_cast, moviemate_movie 테이블을 조인하여 단 한번의 쿼리문으로 해결이 가능한데
 비효울적으로 쿼리문이 작성되있어 추후 리팩토리 할 예정
 
+-> (2023.05.30) moive_cast, moviemate_movie 두 테이블을 inner join후 해당 cast_idx 만 찾는 제약문을 걸어 원하는 영화리스트만 뽑아내는 한 쿼리문으로 수정완료
+
+
 
 ### 댓글리스트화면 (movie_mate_comment_screen.jsp)
 - 해당 영화의 리뷰들만 모아둔 jsp
